@@ -1,0 +1,15 @@
+https://universe.roboflow.com/university-of-strathclyde-m436x/pcb-defect-94yfu
+
+https://universe.roboflow.com/pcbdefect-eftc9/pcb-defect-djz4r
+
+https://universe.roboflow.com/eee-0ev7q/pcb-defect-0rfop
+
+https://universe.roboflow.com/jiraphat/pcb-defect-gyw6j
+
+https://universe.roboflow.com/ta-4ixjm/pcb-defect-gad22
+
+https://universe.roboflow.com/pap-utc7c/pcb-defect-rkt1j
+
+https://universe.roboflow.com/ai-dyci3/pcb-defect-eosje
+
+https://www.kaggle.com/datasets/norbertelter/pcb-defect-dataset
