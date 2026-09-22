@@ -56,6 +56,12 @@ def parse_args() -> argparse.Namespace:
         help="Pretrained weights or a model checkpoint",
     )
     parser.add_argument("--epochs", type=int, default=100)
+    parser.add_argument(
+        "--patience",
+        type=int,
+        default=20,
+        help="Epochs without validation improvement before early stopping",
+    )
     parser.add_argument("--imgsz", type=int, default=640)
     parser.add_argument(
         "--batch",
@@ -71,6 +77,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--name", default="pku_yolo26s")
     parser.add_argument("--project", type=Path, default=PROJECT_DIR / "runs" / "detect")
+    parser.add_argument(
+        "--save-period",
+        type=int,
+        default=10,
+        help="Save an additional checkpoint every N epochs; -1 disables it",
+    )
     parser.add_argument(
         "--resume",
         action="store_true",
@@ -94,6 +106,7 @@ def main() -> None:
     train_args = {
         "data": str(data_yaml),
         "epochs": args.epochs,
+        "patience": args.patience,
         "imgsz": args.imgsz,
         "batch": args.batch,
         "workers": args.workers,
@@ -101,6 +114,8 @@ def main() -> None:
         "name": args.name,
         "pretrained": True,
         "plots": True,
+        "save": True,
+        "save_period": args.save_period,
     }
     if args.device is not None:
         train_args["device"] = args.device
