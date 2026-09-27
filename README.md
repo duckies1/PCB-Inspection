@@ -215,3 +215,73 @@ PCB-Inspection/
 ## License
 
 This project is intended for research and engineering experimentation using publicly available PCB datasets.
+
+## Inspection Application
+
+This repository also contains a model-independent PCB inspection application. The FastAPI backend loads the detector once at startup and returns structured detections in original image coordinates. The React frontend renders the original image, overlays detections in a canvas, and applies confidence/class filters locally without rerunning inference.
+
+### Application Structure
+
+```text
+backend/
+       api/          FastAPI routes and response schemas
+       inference/    model adapter, preprocessing, postprocessing
+       config.py     environment-backed settings
+       main.py       application entry point
+frontend/
+       src/          React dashboard, viewer, filters, and API client
+```
+
+### Requirements
+
+* Python 3.10 or newer
+* Node.js 18 or newer
+* A compatible Ultralytics installation and model checkpoint
+
+The existing root `requirements.txt` contains the training environment. Install the additional API dependencies with:
+
+```bash
+pip install -r backend/requirements.txt
+```
+
+### Model Configuration
+
+The default checkpoint is the repository's `yolo26s.pt`. For a trained checkpoint, set `MODEL_PATH` before starting the backend. Optional settings are `MODEL_NAME`, `DEVICE`, `MAX_UPLOAD_SIZE`, `MODEL_CONFIDENCE`, and `FRONTEND_ORIGIN`.
+
+### Run the Application
+
+Start the backend from the project root:
+
+```bash
+python -m uvicorn backend.main:app --reload --port 8000
+```
+
+In another terminal, start the frontend:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open `http://localhost:5173`. The Vite development server proxies `/api` requests to FastAPI.
+
+### API
+
+`POST /api/detect` accepts a multipart form field named `image` with a JPG, PNG, or WEBP file. The response is model-independent:
+
+```json
+{
+       "image": {"width": 3840, "height": 2748},
+       "classes": ["short", "spur", "missing_hole", "mouse_bite", "open_circuit", "spurious_copper"],
+       "detections": [{
+              "class_id": 0,
+              "class_name": "short",
+              "confidence": 0.94,
+              "bbox": {"x1": 1240, "y1": 532, "x2": 1378, "y2": 684}
+       }],
+       "inference": {"model": "YOLO26s", "time_ms": 42.0, "device": "CPU"}
+}
+```
+
+The current model classes are `short`, `spur`, `missing_hole`, `mouse_bite`, `open_circuit`, and `spurious_copper`. The frontend discovers class names from each response so the detector can be replaced without changing the UI contract.
